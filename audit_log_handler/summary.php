@@ -34,7 +34,40 @@ $MYSQL_USER = getenv('MYSQL_USER');
 $MYSQL_PWD  = getenv('MYSQL_PWD');
 $MYSQL_DB   = getenv('MYSQL_DB');
 
+$t = isset($_GET['t'])?$_GET['t']:time();
+$p = 'year';
+
+echo "<a href=\"?t=" . strtotime('-1 ' . $p, $t) . "&p=$p\">previous</a> | \n";
+echo "<a href=\"/summary/\">now</a> | \n";
+echo "<a href=\"?t=" . strtotime('+1 ' . $p, $t) . "&p=$p\">next</a>\n";
+echo "</br></br>\n";
+
+$date = getdate($t);
+$d = $date['mday'];
+$m = $date['mon'];
+$y = $date['year'];
+$wd = ($date['wday']+6)%7; // week starts on monday
+
+// All days start at 00:00:00
+$s = strtotime("$d-$m-$y");
+$explain = "";
+$s = strtotime("1-1-$y", $s);
+$e = strtotime("+1 year", $s);
+$explain = date("Y", $s);
+// Day ends at 23:59:59
+$e -= 1;
+
+$start = date('Y-m-d H:i:s', $s);
+$end = date('Y-m-d H:i:s', $e);
+
+echo "<pre>\n";
+echo "p: $p ($explain)\n";
+echo "d: " . date('Y-m-d', $t) . "\n";
+echo "s: $start\n";
+echo "e: $end\n";
+echo "</pre>\n";
 ?>
+
 <a href="#logs"># logs</a><br>
 
 <?php
@@ -79,5 +112,7 @@ function querytable($query) {
 
 
 echo "<h1># logs <a href=#top name=logs>^</a></h1>\n";
-$query = "select count(log_timestamp) c, year(log_timestamp) y, monthname(log_timestamp) m, day(log_timestamp) d from logs group by d,m,y;";
+$query  = "select count(log_timestamp) c, year(log_timestamp) y, monthname(log_timestamp) m, day(log_timestamp) d from logs ";
+$query .= "where log_timestamp between '$start' and '$end' ";
+$query .= "group by d,m,y;";
 echo querytable($query);
