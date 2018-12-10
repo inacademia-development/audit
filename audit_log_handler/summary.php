@@ -1,4 +1,18 @@
+<html>
+<head>
 <style>
+table {
+    border-collapse: collapse;
+    border: 0;
+/*     width: 80%; */
+    box-shadow: 1px 2px 3px #ccc;
+}
+td, th {
+    border: 1px solid #666;
+    font-size: 75%;
+    vertical-align: baseline;
+    padding: 4px 5px;
+}
 h1 {
     margin-bottom: 0px;
 }
@@ -10,6 +24,9 @@ pre {
     font-weight: bold;
 }
 </style>
+<head>
+<body>
+<a name=top><h1>Summary</h1></a>
 <?php
 
 $MYSQL_HOST = getenv('MYSQL_HOST');
@@ -62,5 +79,5 @@ function querytable($query) {
 
 
 echo "<h1># logs <a href=#top name=logs>^</a></h1>\n";
-$query = "select count(*) c from logs;";
+$query = "select count(log_timestamp) c, year(log_timestamp) y, monthname(log_timestamp) m, day(log_timestamp) d from logs group by d,m,y;";
 echo querytable($query);
