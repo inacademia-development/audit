@@ -35,11 +35,14 @@ $MYSQL_PWD  = getenv('MYSQL_PWD');
 $MYSQL_DB   = getenv('MYSQL_DB');
 
 $t = isset($_GET['t'])?$_GET['t']:time();
-$p = 'year';
+$p = isset($_GET['p'])?$_GET['p']:"month";
 
 echo "<a href=\"?t=" . strtotime('-1 ' . $p, $t) . "&p=$p\">previous</a> | \n";
 echo "<a href=\"/summary/\">now</a> | \n";
 echo "<a href=\"?t=" . strtotime('+1 ' . $p, $t) . "&p=$p\">next</a>\n";
+echo "<br>\n";
+echo "<a href=\"?t=$t&p=month\">month</a> | \n";
+echo "<a href=\"?t=$t&p=year\">year</a>\n";
 echo "</br></br>\n";
 
 $date = getdate($t);
@@ -51,9 +54,18 @@ $wd = ($date['wday']+6)%7; // week starts on monday
 // All days start at 00:00:00
 $s = strtotime("$d-$m-$y");
 $explain = "";
-$s = strtotime("1-1-$y", $s);
-$e = strtotime("+1 year", $s);
-$explain = date("Y", $s);
+switch($p) {
+    case 'month':
+        $s = strtotime("1-$m-$y", $s);
+        $e = strtotime("+1 month", $s);
+        $explain = date("F", $s);
+        break;
+    case 'year':
+        $s = strtotime("1-1-$y", $s);
+        $e = strtotime("+1 year", $s);
+        $explain = date("Y", $s);
+        break;
+}
 // Day ends at 23:59:59
 $e -= 1;
 
