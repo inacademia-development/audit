@@ -43,6 +43,7 @@ if (isset($_POST['action']) and $_POST['action'] == 'clear') {
 } else {
     $f = isset($_POST['f'])?$_POST['f']:(isset($_SESSION['f'])?$_SESSION['f']:'');
 }
+$_SESSION['f'] = $f;
 
 echo "<a href=\"?t=" . strtotime('-1 ' . $p, $t) . "&p=$p\">previous</a> | \n";
 echo "<a href=\"/audit/\">now</a> | \n";
@@ -51,7 +52,8 @@ echo "<br>\n";
 echo "<a href=\"?t=$t&p=day\">day</a> | \n";
 echo "<a href=\"?t=$t&p=week\">week</a> | \n";
 echo "<a href=\"?t=$t&p=month\">month</a> | \n";
-echo "<a href=\"?t=$t&p=year\">year</a>\n";
+echo "<a href=\"?t=$t&p=year\">year</a> | \n";
+echo "<a href=\"/summary?t=$t&p=$p\">summary</a>\n";
 echo "</br></br>\n";
 
 $date = getdate($t);
@@ -102,6 +104,7 @@ echo "p: $p ($explain)\n";
 echo "d: " . date('Y-m-d', $t) . "\n";
 echo "s: $start\n";
 echo "e: $end\n";
+echo "f: $f\n";
 echo "</pre>\n";
 ?>
 
@@ -148,7 +151,7 @@ function querytable($query) {
         }
         $ret .= "<tr>\n";
         foreach($row as $column) {
-            $ret .= "<td style='border-left: 1px solid; padding: 0px 4px; margin: 0px;'>" . $column . "</td>\n";
+            $ret .= "<td style='border-left: 1px solid; padding: 0px 4px; margin: 0px;'>" . $column . "</td>";
         }
         $ret .= "</tr>\n";
     }
@@ -166,6 +169,9 @@ echo "<h1># sessions per IdP <a href=#top name=idpsessions>^</a></h1>\n";
 $query  = "select count(l.log_sessionid) c, l.log_idp, ANY_VALUE(i.idp_displayname) displayname ";
 $query .= "from logs l left join idps i on l.log_idp=i.idp_entityid ";
 $query .= "where l.log_timestamp between '$start' and '$end' ";
+if ($f) {
+    $query .= "and (l.log_idp like '%$f%' or i.idp_displayname like '%$f%') ";
+}
 $query .= "group by l.log_idp ";
 $query .= "order by c desc;";
 echo querytable($query);
@@ -174,6 +180,9 @@ echo "<h1># sessions per SP <a href=#top name=spsessions>^</a></h1>\n";
 $query  = "select count(l.log_sessionid) c, l.log_sp ";
 $query .= "from logs l ";
 $query .= "where l.log_timestamp between '$start' and '$end' ";
+if ($f) {
+    $query .= "and (l.log_sp like '%$f%') ";
+}
 $query .= "group by l.log_sp ";
 $query .= "order by c desc;";
 echo querytable($query);
@@ -182,6 +191,9 @@ echo "<h1># SP's per IdP <a href=#top name=spperidp>^</a></h1>\n";
 $query  = "select count(l.log_sp) c, l.log_idp, ANY_VALUE(i.idp_displayname) displayname ";
 $query .= "from logs l left join idps i on l.log_idp=i.idp_entityid ";
 $query .= "where l.log_timestamp between '$start' and '$end' ";
+if ($f) {
+    $query .= "and (l.log_idp like '%$f%' or i.idp_displayname like '%$f%') ";
+}
 $query .= "group by l.log_idp ";
 $query .= "order by c desc;";
 echo querytable($query);
@@ -190,6 +202,9 @@ echo "<h1># IdP's per SP <a href=#top name=idppersp>^</a></h1>\n";
 $query  = "select count(l.log_idp) c, l.log_sp ";
 $query .= "from logs l ";
 $query .= "where l.log_timestamp between '$start' and '$end' ";
+if ($f) {
+    $query .= "and (l.log_sp like '%$f%') ";
+}
 $query .= "group by l.log_sp ";
 $query .= "order by c desc;";
 echo querytable($query);
@@ -198,6 +213,9 @@ echo "<h1># domain <a href=#top name=domains>^</a></h1>\n";
 $query  = "select count(l.log_sessionid) c, l.log_domain ";
 $query .= "from logs l ";
 $query .= "where l.log_timestamp between '$start' and '$end' ";
+if ($f) {
+    $query .= "and (l.log_domain like '%$f%') ";
+}
 $query .= "group by l.log_domain ";
 $query .= "order by c desc;";
 echo querytable($query);
@@ -206,6 +224,9 @@ echo "<h1># country <a href=#top name=countries>^</a></h1>\n";
 $query  = "select count(l.log_sessionid) c, i.idp_country ";
 $query .= "from logs l left join idps i on l.log_idp=i.idp_entityid ";
 $query .= "where l.log_timestamp between '$start' and '$end' ";
+if ($f) {
+    $query .= "and (i.idp_country like '%$f%') ";
+}
 $query .= "group by i.idp_country ";
 $query .= "order by c desc;";
 echo querytable($query);

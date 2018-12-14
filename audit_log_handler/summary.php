@@ -36,6 +36,8 @@ $MYSQL_DB   = getenv('MYSQL_DB');
 
 $t = isset($_GET['t'])?$_GET['t']:time();
 $p = isset($_GET['p'])?$_GET['p']:"month";
+// We don't know day
+if ($p == "day") $p = "month";
 
 echo "<a href=\"?t=" . strtotime('-1 ' . $p, $t) . "&p=$p\">previous</a> | \n";
 echo "<a href=\"/summary/\">now</a> | \n";
@@ -111,10 +113,25 @@ function querytable($query) {
             $ret .= "</tr>\n";
             $header = true;
         }
+        $c = $row['c'];
+        $y = $row['y'];
+        $m = $row['m'];
+        $d = $row['d'];
+
         $ret .= "<tr>\n";
-        foreach($row as $column) {
-            $ret .= "<td style='border-left: 1px solid; padding: 0px 4px; margin: 0px;'>" . $column . "</td>\n";
-        }
+
+        $ret .= "<td style='border-left: 1px solid; padding: 0px 4px; margin: 0px;'>$c</td>";
+
+        $ret .= "<td style='border-left: 1px solid; padding: 0px 4px; margin: 0px;'>";
+        $ret .= "<a href=\"/audit?p=year&t=" . strtotime("1-1-$y") . "\">$y</a></td>";
+
+        $ret .= "<td style='border-left: 1px solid; padding: 0px 4px; margin: 0px;'>";
+        $ret .= "<a href=\"/audit?p=month&t=" . strtotime("1-$m-$y") . "\">";
+        $ret .= date("F", strtotime("$d-$m-$y")) . "</a></td>";
+
+        $ret .= "<td style='border-left: 1px solid; padding: 0px 4px; margin: 0px;'>";
+        $ret .= "<a href=\"/audit?p=day&t=" . strtotime("$d-$m-$y") . "\">$d</a></td>";
+
         $ret .= "</tr>\n";
     }
     $ret .= "</table>\n";
@@ -124,7 +141,7 @@ function querytable($query) {
 
 
 echo "<h1># logs <a href=#top name=logs>^</a></h1>\n";
-$query  = "select count(log_timestamp) c, year(log_timestamp) y, monthname(log_timestamp) m, day(log_timestamp) d from logs ";
+$query  = "select count(log_timestamp) c, year(log_timestamp) y, month(log_timestamp) m, day(log_timestamp) d from logs ";
 $query .= "where log_timestamp between '$start' and '$end' ";
 $query .= "group by d,m,y;";
 echo querytable($query);
