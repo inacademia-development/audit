@@ -36,8 +36,6 @@ $MYSQL_DB   = getenv('MYSQL_DB');
 
 $t = isset($_GET['t'])?$_GET['t']:time();
 $p = isset($_GET['p'])?$_GET['p']:"month";
-// We don't know day
-if ($p == "day") $p = "month";
 
 echo "<a href=\"?t=" . strtotime('-1 ' . $p, $t) . "&p=$p\">previous</a> | \n";
 echo "<a href=\"/summary/\">now</a> | \n";
@@ -94,7 +92,7 @@ if ($mysqli->connect_errno) {
 }
 
 
-function querytable($query) {
+function summary_table($query) {
     global $mysqli;
     $res = $mysqli->query($query);
     if (!$res) {
@@ -144,4 +142,4 @@ echo "<h1># logs <a href=#top name=logs>^</a></h1>\n";
 $query  = "select count(log_timestamp) c, year(log_timestamp) y, month(log_timestamp) m, day(log_timestamp) d from logs ";
 $query .= "where log_timestamp between '$start' and '$end' ";
 $query .= "group by d,m,y;";
-echo querytable($query);
+echo summary_table($query);
