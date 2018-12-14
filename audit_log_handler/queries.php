@@ -144,3 +144,10 @@ function get_logs() {
     $query = "select count(*) c from logs;";
     return get_data($query);
 }
+
+function get_summary($s, $e) {
+    $query  = "select count(log_timestamp) c, year(log_timestamp) y, month(log_timestamp) m, day(log_timestamp) d from logs ";
+    $query .= "where log_timestamp between '$s' and '$e' ";
+    $query .= "group by d,m,y;";
+    return get_data($query);
+}

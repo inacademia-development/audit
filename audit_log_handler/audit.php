@@ -34,6 +34,7 @@ session_start();
 
 $t = isset($_GET['t'])?$_GET['t']:time();
 $p = isset($_GET['p'])?$_GET['p']:"month";
+
 if (isset($_POST['action']) and $_POST['action'] == 'clear') {
     $filter = '';
 } else {
@@ -49,7 +50,8 @@ echo "<a href=\"?t=$t&p=day\">day</a> | \n";
 echo "<a href=\"?t=$t&p=week\">week</a> | \n";
 echo "<a href=\"?t=$t&p=month\">month</a> | \n";
 echo "<a href=\"?t=$t&p=year\">year</a> | \n";
-echo "<a href=\"/summary?t=$t&p=" . (in_array($p, array('year', 'month'))?$p:'month') . "\">summary</a>\n";
+echo "<a href=\"/summary?t=$t&p=" . (in_array($p, array('year', 'month'))?$p:'month') . "\">summary</a> | \n";
+echo "<a href=\"/acsv?t=$t&p=$p\">csv</a>\n";
 echo "</br></br>\n";
 
 $date = getdate($t);

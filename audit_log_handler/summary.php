@@ -28,12 +28,7 @@ pre {
 <body>
 <a name=top><h1>Summary</h1></a>
 <?php
-
-$MYSQL_HOST = getenv('MYSQL_HOST');
-$MYSQL_USER = getenv('MYSQL_USER');
-$MYSQL_PWD  = getenv('MYSQL_PWD');
-$MYSQL_DB   = getenv('MYSQL_DB');
-
+include('queries.php');
 $t = isset($_GET['t'])?$_GET['t']:time();
 $p = isset($_GET['p'])?$_GET['p']:"month";
 
@@ -42,7 +37,8 @@ echo "<a href=\"/summary/\">now</a> | \n";
 echo "<a href=\"?t=" . strtotime('+1 ' . $p, $t) . "&p=$p\">next</a>\n";
 echo "<br>\n";
 echo "<a href=\"?t=$t&p=month\">month</a> | \n";
-echo "<a href=\"?t=$t&p=year\">year</a>\n";
+echo "<a href=\"?t=$t&p=year\">year</a> | \n";
+echo "<a href=\"/scsv?t=$t&p=$p\">csv</a>\n";
 echo "</br></br>\n";
 
 $date = getdate($t);
@@ -83,21 +79,7 @@ echo "</pre>\n";
 <a href="#logs"># logs</a><br>
 
 <?php
-$mysqli = new mysqli($MYSQL_HOST, $MYSQL_USER, $MYSQL_PWD, $MYSQL_DB);
-if ($mysqli->connect_errno) {
-    echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-    exit();
-} else {
-//     echo $mysqli->host_info . "\n";
-}
-
-
-function summary_table($query) {
-    global $mysqli;
-    $res = $mysqli->query($query);
-    if (!$res) {
-        return $mysqli->error;
-    }
+function summary_table($res) {
     $res->data_seek(0);
 
     $ret = "<table>\n";
@@ -136,10 +118,5 @@ function summary_table($query) {
     return $ret;
 }
 
-
-
 echo "<h1># logs <a href=#top name=logs>^</a></h1>\n";
-$query  = "select count(log_timestamp) c, year(log_timestamp) y, month(log_timestamp) m, day(log_timestamp) d from logs ";
-$query .= "where log_timestamp between '$start' and '$end' ";
-$query .= "group by d,m,y;";
-echo summary_table($query);
+echo summary_table(get_summary($start, $end));
