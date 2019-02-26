@@ -1,0 +1,11 @@
+MYSQL_HOST="172.172.172.220"
+MYSQL_USER="audit"
+MYSQL_PWD="pw4audit"
+MYSQL_DB="audit_db"
+
+STATS_HOST_IP="172.172.172.225"
+
+echo $MYSQL_HOST
+echo $MYSQL_USER
+echo $MYSQL_PWD
+echo $MYSQL_DB

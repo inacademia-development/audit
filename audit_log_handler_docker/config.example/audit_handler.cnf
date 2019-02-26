@@ -1,0 +1,14 @@
+# MySQL container credentials and IP
+MYSQL_HOST="172.172.172.220"
+MYSQL_USER="audit"
+MYSQL_PWD="pw4audit"
+MYSQL_DB="audit_db"
+
+# IP of the log handler host (so this docker container)
+LOGHANDLER_HOST_IP="172.172.172.221"
+
+# Path to the 'remote' directory which holds rsyslog data (typically /var/log/remote)
+REMOTE_DIR=/tmp/remote_2019-01-29/var/log/remote
+# Path to the client database file (cdb.json)
+CDB_DIR=/home/niels/dev/InAcademia/inacademia-cdb
+
