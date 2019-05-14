@@ -11,7 +11,8 @@ if [[ "$(docker images -q $IMAGE_TAG 2> /dev/null)" == "" ]]; then
 fi
 
 # fetsh the correct stats software and put it i app/audit
-/usr/bin/git clone -b $AUDIT_TAG git@github.com:inacademia-development/audit.git app/ || /usr/bin/git -C app/ checkout -b $AUDIT_TAG  && /usr/bin/git -C app/ pull origin $AUDIT_TAG
+cd app/
+/usr/bin/git clone -b $STATS_TAG git@github.com:inacademia-development/stats.git || /usr/bin/git checkout -b $STATS_TAG  && /usr/bin/git pull origin $STATS_TAG
 
 # find the location of configs in current directory structure
 RUN_DIR=$PWD
@@ -21,7 +22,7 @@ docker run -it \
 	--hostname stats.inacademia.local \
 	--ip $STATS_HOST_IP \
 	--net inacademia.local \
-	-v $RUN_DIR/app/audit:/var/www/html/stats \
+	-v $RUN_DIR/app/stats:/var/www/html/stats \
 	-p 8080:80 \
 	-e MYSQL_PWD=$MYSQL_PWD \
     -e MYSQL_DB=$MYSQL_DB \

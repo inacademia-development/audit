@@ -5,7 +5,7 @@ MYSQL_PWD="pw4audit"
 MYSQL_DB="audit_db"
 
 # the git tag for the audit software bundle
-AUDIT_TAG="master"
+STATS_TAG="master"
 
 # The Ip of teh stats box
 STATS_HOST_IP="172.172.172.225"
