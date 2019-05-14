@@ -1,10 +1,16 @@
+# Database credentials
 MYSQL_HOST="172.172.172.220"
 MYSQL_USER="audit"
 MYSQL_PWD="pw4audit"
 MYSQL_DB="audit_db"
 
+# the git tag for the audit software bundle
+AUDIT_TAG="master"
+
+# The Ip of teh stats box
 STATS_HOST_IP="172.172.172.225"
 
+# Just for debug
 echo $MYSQL_HOST
 echo $MYSQL_USER
 echo $MYSQL_PWD

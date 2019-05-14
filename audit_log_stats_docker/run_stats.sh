@@ -10,6 +10,9 @@ if [[ "$(docker images -q $IMAGE_TAG 2> /dev/null)" == "" ]]; then
   docker build -t $IMAGE_TAG .
 fi
 
+# fetsh the correct stats software and put it i app/audit
+/usr/bin/git clone -b $AUDIT_TAG git@github.com:inacademia-development/audit.git app/ || /usr/bin/git -C app/ checkout -b $AUDIT_TAG  && /usr/bin/git -C app/ pull origin $AUDIT_TAG
+
 # find the location of configs in current directory structure
 RUN_DIR=$PWD
 
