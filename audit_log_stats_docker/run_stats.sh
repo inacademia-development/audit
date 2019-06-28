@@ -14,16 +14,14 @@ fi
 cd app/
 /usr/bin/git clone -b $STATS_TAG git@github.com:inacademia-development/stats.git || /usr/bin/git checkout -b $STATS_TAG  && /usr/bin/git pull origin $STATS_TAG
 
-# find the location of configs in current directory structure
-RUN_DIR=$PWD
-
 # Start stats amd expose on port 8080
 docker run -it \
 	--hostname stats.inacademia.local \
 	--ip $STATS_HOST_IP \
 	--net inacademia.local \
-	-v $RUN_DIR/app/stats:/var/www/html/stats \
-	-p 8080:80 \
+	-v $DIR/app/stats:/var/www/html/stats \
+	-p 80:80 \
+	-p 443:443 \
 	-e MYSQL_PWD=$MYSQL_PWD \
     -e MYSQL_DB=$MYSQL_DB \
     -e MYSQL_USER=$MYSQL_USER \
