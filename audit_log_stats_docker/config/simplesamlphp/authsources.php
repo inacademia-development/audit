@@ -21,10 +21,10 @@ $config = [
 		),
         'UIInfo' => [
 			'DisplayName' => [
-				'en' => 'InAcademia admin portal (test)',
+				'en' => 'InAcademia stats portal (test)',
 			],
 			'Description' => [
-				'en' => 'The portal for InAcademia administrators',
+				'en' => 'The stats portal for InAcademia (test)',
 			],
 			'InformationURL' => [
 				'en' => 'https://inacademia.org',

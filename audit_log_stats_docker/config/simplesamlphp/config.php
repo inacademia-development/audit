@@ -129,7 +129,7 @@ $config = [
      * A possible way to generate a random salt is by running the following command from a unix shell:
      * LC_CTYPE=C tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null;echo
      */
-    'secretsalt' => 'n1t9nnkk28uineyji37trbr8ovxk3aoj',
+    'secretsalt' => 'fxxfwnxldmgj9f9oii15c9unpvdhghr6',
 
     /*
      * This password must be kept secret, and modified from the default value 123.
