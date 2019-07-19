@@ -5,13 +5,10 @@ MYSQL_PWD="pw4audit"
 MYSQL_DB="audit_db"
 
 # the git tag for the audit software bundle
-STATS_TAG="master"
+STATS_TAG="federated-stats"
 
 # The Ip of teh stats box
 STATS_HOST_IP="172.172.172.225"
 
 # Just for debug
-echo $MYSQL_HOST
-echo $MYSQL_USER
-echo $MYSQL_PWD
-echo $MYSQL_DB
+echo "Using database $MYSQL_DB on host $MYSQL_HOST with user $MYSQL_USER"

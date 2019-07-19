@@ -12,14 +12,14 @@ if [[ "$(docker images -q $IMAGE_TAG 2> /dev/null)" == "" ]]; then
 fi
 
 # fetsh the correct stats software and put it i app/audit
-cd app/
-/usr/bin/git clone -b $STATS_TAG git@github.com:inacademia-development/stats.git || /usr/bin/git checkout -b $STATS_TAG  && /usr/bin/git pull origin $STATS_TAG
+#cd app/
+#/usr/bin/git clone -b $STATS_TAG git@github.com:inacademia-development/stats.git || /usr/bin/git checkout -b $STATS_TAG  && /usr/bin/git pull origin $STATS_TAG
 
 # fetch the correct portal version
 if [ -d "$STATS_DIR" ]; then
   echo "STATS Directory $STATS_DIR exists!, Updating to version/branch $STATS_TAG" 
   cd "$STATS_DIR"
-  #/usr/bin/git checkout $STATS_TAG  && /usr/bin/git pull origin $STATS_TAG
+  /usr/bin/git checkout $STATS_TAG  && /usr/bin/git pull origin $STATS_TAG
 else
   echo "$STATS_DIR DOES NOT exists!, Cloning version/branch $STATS_TAG"
   cd $DIR/../..
@@ -31,7 +31,7 @@ docker run -it \
 	--hostname stats.inacademia.local \
 	--ip $STATS_HOST_IP \
 	--net inacademia.local \
-	-v $DIR/../../stats:/var/www/html/stats \
+	-v $STATS_DIR:/var/www/html/stats \
 	-v $DIR/config/:/tmp/inacademia/config \
 	-p 80:80 \
 	-p 443:443 \
