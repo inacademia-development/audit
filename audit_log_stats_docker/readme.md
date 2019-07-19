@@ -6,7 +6,7 @@ Start by creating a copy fo the example configuration:
 `cp -R config.example config`
 
 The config directory has the following structure:
-`
+```
 ├── apache
 │   ├── stats.crt
 │   ├── stats.key
@@ -18,7 +18,7 @@ The config directory has the following structure:
     ├── saml20-idp-remote.php
     ├── saml.crt
     └── saml.pem
-`
+```
 
 ## General configuration
 The audit_stats.cnf file contains some generic configuration of the setup and the application.
@@ -34,11 +34,11 @@ All other parameters may probably be left untouched.
 
 ## Simpelsamlphp
 We use SimplesSAMLphp (ssp) to handle SAML based authentication for the stats.
-In config.php you MUST change values the following 2 options to a value for you configuration only:
-`
+*In config.php you MUST change values the following 2 options to secure your installation:*
+```
  'secretsalt' => 'xxxxxxxxxxxxxxxx',
  'auth.adminpassword' => 'xxxxxxxxxxxx',
-`
+```
 
 For signign and encrypting teh SAML messages, ssp needs a certificate. You should create a self signed certificate with a long lifetime (5-10 years) for a production service and put the key and cert in this directory with the files matching the names presented. Do not use the https certificates for this!
 
