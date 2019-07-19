@@ -26,6 +26,6 @@ RUN mkdir -p /var/simplesamlphp
 RUN tar xvzfC /tmp/simplesamlphp.tar.gz /var/simplesamlphp --strip 1
 RUN ln -s /var/simplesamlphp /root/simplesaml
 
-#ENTRYPOINT ["/tmp/inacademia/start.sh"]
-ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["/tmp/inacademia/start.sh"]
+#ENTRYPOINT ["/bin/bash"]
 
