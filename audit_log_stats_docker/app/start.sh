@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Set https certificates
-ln -s /tmp/inacademia/config/apache/stats.local.crt /etc/ssl/certs/stats.local.crt
-ln -s /tmp/inacademia/config/apache/stats.local.key /etc/ssl/private/stats.local.key
+ln -s /tmp/inacademia/config/apache/stats.crt /etc/ssl/certs/stats.crt
+ln -s /tmp/inacademia/config/apache/stats.key /etc/ssl/private/stats.key
 
 # Set site config
-ln -s /tmp/inacademia/config/apache/stats.local_ssl.conf /etc/apache2/sites-available/stats.local_ssl.conf
-a2ensite stats.local_ssl
+ln -s /tmp/inacademia/config/apache/stats_ssl.conf /etc/apache2/sites-available/stats_ssl.conf
+a2ensite stats_ssl
 
 # config for simplesamlphp
 #Remove default config
