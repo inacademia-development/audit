@@ -12,7 +12,7 @@ fi
 
 echo "Building  docker container $IMAGE_TAG ..."
 # Build the docker image
-docker build -t $IMAGE_TAG . 
+docker build -t $IMAGE_TAG .
 #    --build-arg CODE_REPO=${CODE_REPO} \
 #    --build-arg IDP_HINT_REPO=${IDP_HINT_REPO} \
 #    --no-cache \

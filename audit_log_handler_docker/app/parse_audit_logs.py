@@ -13,10 +13,11 @@ LOGS_DIR = BASE_DIR + "/remote"
 IDPS_DIR = BASE_DIR + "/inacademia_admin_data"
 IDPS_HASH_FILE = IDPS_DIR + "/entityids.json"
 IDPS_NAME_FILE = IDPS_DIR + "/display_names.json"
-IDPS_COUNTRY_FILE = IDPS_DIR + "/entitiyids_country.json"
+IDPS_COUNTRY_FILE = IDPS_DIR + "/entityids_country.json"
+IDPS_RA_FILE = IDPS_DIR + "/entityids_ra.json"
 CLIENTS_FILE = BASE_DIR + "/cdb/cdb.json"
-SERVER_BLACKLIST = ['127.0.0.1']
-EXCLUDE_LINES_WITH = ['rsyslogd', 'testid']
+SERVER_BLACKLIST = ['.git', '127.0.0.1']
+EXCLUDE_LINES_WITH = ['kernel', 'sudo', 'sshd', 'rsyslogd', 'testid', 'DEBUG', 'INFO', 'WARNI']
 
 UPDATE_LOGS = 1
 UPDATE_IDPS = 1
@@ -50,17 +51,24 @@ def parse_audit_line(a_line, exclude_lines_with):
         try:
             a_line.rstrip('\n')
             char_pos = a_line.index("{")
-            audit_json = json.loads(a_line[char_pos:])
+            end_pos = a_line.rindex("}") + 1
+            audit_json = json.loads(a_line[char_pos:end_pos])
 
             audit_dict['timestamp'] = audit_json['timestamp']
             audit_dict['sessionid'] = audit_json['sessionid']
             audit_dict['idp'] = audit_json['idp']
             audit_dict['sp'] = audit_json['sp']
             # domain can have metadata e.g. "domain": ["access-check.edugain.org, faculty"]
-            audit_dict['domain'] = audit_json['attr']['domain'][0].split(',')[0]
+            if audit_json['attr']['domain'] != None:
+                audit_dict['domain'] = audit_json['attr']['domain'][0].split(',')[0]
+            else:
+                audit_dict['domain'] = 'unknown'
             # after we fixe it
             #audit_dict['domain'] = audit_json['attr']['domain'][0]
-            audit_dict['affiliations'] = audit_json['attr']['affiliation'][0]
+            if audit_json['attr']['affiliation'] != None:
+                audit_dict['affiliations'] = audit_json['attr']['affiliation'][0]
+            else:
+                audit_dict['affiliations'] = ''
 
             return audit_dict
         except:
@@ -84,7 +92,7 @@ def parse_idps_file(filename, exclude_lines_with):
         data = json.load(f)
 
     return data
-    
+
 def parse_idps_name_file(filename, exclude_lines_with):
     with open(filename) as f:
         data = json.load(f)
@@ -156,15 +164,15 @@ def write_logs_sql(cur, audit_dict):
              "`log_faculty`=" + str('faculty' in affiliations)     + ","
              "`log_staff`=" + str('staff' in affiliations)         + ","
              "`log_student`=" + str('student' in affiliations)
-            )
+            ).encode('utf-8')
 
     try:
         cur.execute(query)
-    except MySQLdb.Error,e:
+    except MySQLdb.Error as e:
         p("Query: " + query)
         p("Error:%d:%s" % (e.args[0], e.args[1]))
 
-def write_idps_sql(cur, key, name, domain, country, idphash):
+def write_idps_sql(cur, key, name, domain, country, ra, idphash):
     # Create a Cursor object
     #cur = db.cursor()
     #cur.execute('SET NAMES UTF8MB4;')
@@ -173,21 +181,24 @@ def write_idps_sql(cur, key, name, domain, country, idphash):
 
     name = name.replace("'", "\\'")
     query = ("INSERT INTO `" + MYSQL_DB + "`.`idps` "
-             " ( `idp_entityid`, `idp_displayname`, `idp_domain`, `idp_country`, `idp_hash`)  "
+             " ( `idp_entityid`, `idp_displayname`, `idp_domain`, `idp_country`, `idp_ra`, `idp_hash`)  "
              " VALUES "
              " ( '"  + key + "',"
              "   '"  + name + "',"
-             "   '"  +  domain  + "',"
-             "   '"  +  country  + "',"
-             "   '"  +  idphash  + "') "
+             "   '"  + domain  + "',"
+             "   '"  + country  + "',"
+             "   '"  + ra  + "',"
+             "   '"  + idphash  + "') "
              "ON DUPLICATE KEY UPDATE "
              "`idp_displayname`='" + name + "',"
              "`idp_domain`='" + domain + "',"
-             "`idp_country`='" + country + "'"
-            )
+             "`idp_country`='" + country + "',"
+             "`idp_ra`='" + ra + "'"
+            ).encode('utf-8')
     try:
         cur.execute(query)
-    except MySQLdb.Error,e:
+    except MySQLdb.Error as e:
+        p("Query: " + query)
         p("Error:%d:%s" % (e.args[0], e.args[1]))
 
 def write_client_sql(cur, key, name):
@@ -204,10 +215,11 @@ def write_client_sql(cur, key, name):
              "   '"  + name  + "')"
              "ON DUPLICATE KEY UPDATE "
              "`client_displayname`='" + name + "'"
-            )
+            ).encode('utf-8')
     try:
         cur.execute(query)
-    except MySQLdb.Error,e:
+    except MySQLdb.Error as e:
+        p("Query: " + query)
         p("Error:%d:%s" % (e.args[0], e.args[1]))
 
 # MAIN
@@ -247,14 +259,15 @@ if UPDATE_IDPS:
     idps_dict = parse_idps_file(IDPS_HASH_FILE, "")
     idps_name_dict = parse_idps_name_file(IDPS_NAME_FILE, "")
     idps_country_dict = parse_idps_country_file(IDPS_COUNTRY_FILE, "")
+    idps_ra_dict = parse_idps_country_file(IDPS_RA_FILE, "")
 
     for key in idps_dict:
         p(key)
         try:
             #write_idps_sql(cur, key, idps_dict[key], "unknown", idps_country_dict.get(key, "unknown"))
-            write_idps_sql(cur, idps_dict[key], idps_name_dict[key], "unknown", idps_country_dict.get(key, "unknown"), key)            
-        except:
-            p("Issue with db write for %s" % (key))
+            write_idps_sql(cur, idps_dict.get(key, "unknown"), idps_name_dict.get(key, "unknown"), "unknown", idps_country_dict.get(key, "xx"), idps_ra_dict.get(key, "unknown"), key)
+        except Exception as e:
+            p("Issue with db write for %s, %s" % (key, e.message))
 
 if UPDATE_CLIENTS:
     clients_dict = parse_clients_file(CLIENTS_FILE, "")
@@ -263,8 +276,8 @@ if UPDATE_CLIENTS:
         p(key)
         try:
             write_client_sql(cur, key, clients_dict[key])
-        except:
-            p("Issue with db write for %s" % (key))
+        except Exception as e:
+            p("Issue with db write for %s, %s" % (key, e.message))
 
 #cur.close()
 db.close()

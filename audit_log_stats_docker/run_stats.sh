@@ -17,7 +17,7 @@ fi
 
 # fetch the correct portal version
 if [ -d "$STATS_DIR" ]; then
-  echo "STATS Directory $STATS_DIR exists!, Updating to version/branch $STATS_TAG" 
+  echo "STATS Directory $STATS_DIR exists!, Updating to version/branch $STATS_TAG"
   cd "$STATS_DIR"
   /usr/bin/git checkout $STATS_TAG  && /usr/bin/git pull origin $STATS_TAG
 else
@@ -26,17 +26,16 @@ else
   /usr/bin/git clone -b $STATS_TAG git@github.com:inacademia-development/stats.git
 fi
 
-# Start stats amd expose on port 8080
+# Start stats and expose on port 8080
 docker run -it \
-	--hostname stats.inacademia.local \
-	--ip $STATS_HOST_IP \
-	--net inacademia.local \
-	-v $STATS_DIR:/var/www/html/stats \
-	-v $DIR/config/:/tmp/inacademia/config \
-	-p 80:80 \
-	-p 443:443 \
-	-e MYSQL_PWD=$MYSQL_PWD \
+    --hostname stats.inacademia.local \
+    --ip $STATS_HOST_IP \
+    --net inacademia.local \
+    -v $STATS_DIR:/var/www/html/stats \
+    -v $DIR/config/:/tmp/inacademia/config \
+    -p 443:443 \
+    -e MYSQL_PWD=$MYSQL_PWD \
     -e MYSQL_DB=$MYSQL_DB \
     -e MYSQL_USER=$MYSQL_USER \
     -e MYSQL_HOST=$MYSQL_HOST \
-	$IMAGE_TAG
+    $IMAGE_TAG

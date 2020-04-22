@@ -1,4 +1,8 @@
 env
 audit
+clients
 audit_log_handler/input*
 audit_log_handler/results/
+audit_log_handler_docker/config/
+audit_log_stats_docker/config/
+audit_log_handler_docker/tmp/
