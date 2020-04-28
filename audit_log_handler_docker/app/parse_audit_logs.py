@@ -105,6 +105,12 @@ def parse_idps_country_file(filename, exclude_lines_with):
 
     return data
 
+def parse_idps_ra_file(filename, exclude_lines_with):
+    with open(filename) as f:
+        data = json.load(f)
+
+    return data
+
 def parse_clients_file(filename, exclude_lines_with):
     clients_dict = {}
 
@@ -259,7 +265,7 @@ if UPDATE_IDPS:
     idps_dict = parse_idps_file(IDPS_HASH_FILE, "")
     idps_name_dict = parse_idps_name_file(IDPS_NAME_FILE, "")
     idps_country_dict = parse_idps_country_file(IDPS_COUNTRY_FILE, "")
-    idps_ra_dict = parse_idps_country_file(IDPS_RA_FILE, "")
+    idps_ra_dict = parse_idps_ra_file(IDPS_RA_FILE, "")
 
     for key in idps_dict:
         p(key)
