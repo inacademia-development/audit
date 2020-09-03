@@ -33,6 +33,7 @@ docker run -it \
 	--net inacademia.local \
 	-v $STATS_DIR:/var/www/html/stats \
 	-v $DIR/config/:/tmp/inacademia/config \
+    -v $STATS_DIR:/var/www/html/stats \
 	-p 80:80 \
 	-p 443:443 \
 	-e MYSQL_PWD=$MYSQL_PWD \

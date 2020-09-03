@@ -7,7 +7,8 @@ RUN apt install -y \
     libapache2-mod-php \
     curl \
     ca-certificates \
-    php-mysql php-xml php-mbstring php-curl
+    php-mysql php-xml \
+    php-mbstring php-curl
 
 #Copy over start script
 COPY app/start.sh /tmp/inacademia/start.sh
@@ -19,6 +20,10 @@ RUN a2enmod rewrite
 RUN a2enmod headers
 RUN a2enmod php7.2
 RUN a2dissite 000-default
+
+RUN rm /var/www/html/index.html
+COPY app/index.php /var/www/html/index.php
+
 
 # Setup simplesamlphp
 RUN curl -L https://simplesamlphp.org/download?latest --output /tmp/simplesamlphp.tar.gz

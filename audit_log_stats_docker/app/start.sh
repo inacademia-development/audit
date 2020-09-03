@@ -5,7 +5,11 @@ ln -s /tmp/inacademia/config/apache/stats.crt /etc/ssl/certs/stats.crt
 ln -s /tmp/inacademia/config/apache/stats.key /etc/ssl/private/stats.key
 
 # Set site config
+ln -s /tmp/inacademia/config/apache/stats.conf /etc/apache2/sites-available/stats.conf
 ln -s /tmp/inacademia/config/apache/stats_ssl.conf /etc/apache2/sites-available/stats_ssl.conf
+
+# Enable sites
+a2ensite stats
 a2ensite stats_ssl
 
 # config for simplesamlphp
