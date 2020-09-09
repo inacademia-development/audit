@@ -11,6 +11,7 @@ $config = [
         'saml:SP',
 		'privatekey' =>  '/var/simplesamlphp/cert/saml.pem',
         'certificate' => '/var/simplesamlphp/cert/saml.crt',
+        'idp' => 'https://login.terena.org/wayf/saml2/idp/metadata.php',
         'contacts' => array(
 			array(
 				'contactType'       => 'support',
