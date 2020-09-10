@@ -84,7 +84,7 @@ def parse_idps_file(filename, exclude_lines_with):
         data = json.load(f)
 
     return data
-    
+
 def parse_idps_name_file(filename, exclude_lines_with):
     with open(filename) as f:
         data = json.load(f)
@@ -250,11 +250,12 @@ if UPDATE_IDPS:
 
     for key in idps_dict:
         p(key)
-        try:
-            #write_idps_sql(cur, key, idps_dict[key], "unknown", idps_country_dict.get(key, "unknown"))
-            write_idps_sql(cur, idps_dict[key], idps_name_dict[key], "unknown", idps_country_dict.get(key, "unknown"), key)            
-        except:
-            p("Issue with db write for %s" % (key))
+        if key in idps_name_dict.keys() + idps_country_dict.keys():
+            try:
+                #write_idps_sql(cur, key, idps_dict[key], "unknown", idps_country_dict.get(key, "unknown"))
+                write_idps_sql(cur, idps_dict[key], idps_name_dict[key], "unknown", idps_country_dict.get(key, "unknown"), key)
+            except:
+                p("Issue with db write for %s" % (key))
 
 if UPDATE_CLIENTS:
     clients_dict = parse_clients_file(CLIENTS_FILE, "")
